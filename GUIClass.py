@@ -12,7 +12,7 @@ class GUI():
         self.song = song
         
         # main window
-        self.root.title("Wyatt's music player")
+        self.root.title("Song segment player")
         self.root.iconbitmap(r'Images/icon.ico')
         self.root.configure(background='white')
         
