@@ -1,0 +1,7 @@
+ToDo:
+
+slow down audio - use c++ code because python too slow
+play/pause/play segment with space bar
+left right arrows skip forward backward
+left click set left bar position, right click right bar
+arrange buttons and everything to stay central when window size is changed
