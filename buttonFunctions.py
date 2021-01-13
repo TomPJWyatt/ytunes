@@ -44,6 +44,11 @@ def stopStream(song):
         song.wf.rewind()
     else:
         song.wf.rewind()
+def playPauseStream(song,rateFactor=1):
+    if song.stream==None or not song.stream.is_active():
+        openStream(song,rateFactor)
+    elif song.stream.is_active():
+        song.stream.stop_stream()
 def pauseStream(song):
     if song.stream.is_active():
         song.stream.stop_stream()
@@ -70,9 +75,9 @@ def repeatSeg(song,repeatSegB):
         repeatSegB.config(relief='sunken')
     else:
         repeatSegB.config(relief='raised')
-        
+
 # pyaudio open stream uses this funtion to send data to the stream bit by bit
-# so its a good place to add other mid-playback stuff like ff and rw 
+# so its a good place to add other mid-playback stuff like ff and rw
 def callback(in_data,frame_count,time_info,status,song):
     data = song.wf.readframes(frame_count)
     if song.PLAYSEG:

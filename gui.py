@@ -10,19 +10,19 @@ class GUI():
         # given parameters
         self.root = root
         self.song = song
-        
+
         # main window
         self.root.title("Song segment player")
         self.root.iconbitmap(r'Images/icon.ico')
         self.root.configure(background='white')
-        
+
         # menubar
         self.menubar = Menu(self.root)
         self.filemenu = Menu(self.menubar,tearoff=0)
         self.filemenu.add_command(label="Open",
                                   command=lambda:b.openSong(self))
         self.menubar.add_cascade(label="File",menu=self.filemenu)
-        
+
         # images for buttons
         self.segmentIm = PhotoImage(file=r'Images/SegmentB.png')
         self.repSegIm = PhotoImage(file=r'Images/Repeat.png')
@@ -37,7 +37,7 @@ class GUI():
         self.cursorIm = PhotoImage(file=r'Images/Cursor.png')
         self.magPlusIm = PhotoImage(file=r'Images/MagPlus.png')
         self.magMinusIm = PhotoImage(file=r'Images/MagMinus.png')
-        
+
         # making buttons
         self.segmentB = Button(image=self.segmentIm,
                                command=lambda:b.playSeg(self.song))
@@ -53,7 +53,7 @@ class GUI():
                           command=lambda:b.ffStream(self.song))
         self.rwB = Button(image=self.rwIm,
                           command=lambda:b.rwStream(self.song))
-        self.fullSpeedB = Button(image=self.fullSpeedIm) 
+        self.fullSpeedB = Button(image=self.fullSpeedIm)
         self.halfSpeedB = Button(image=self.halfSpeedIm)
         # making radio buttons
         self.CLICKMODE = StringVar(value="slide")
@@ -74,14 +74,14 @@ class GUI():
             image=self.magPlusIm,
             variable=self.CLICKMODE,
             value='mag+',
-            indicatoron=0)  
+            indicatoron=0)
         self.magMinusB = Radiobutton(
             self.root,
             image=self.magMinusIm,
             variable=self.CLICKMODE,
             value='mag-',
-            indicatoron=0)        
-        
+            indicatoron=0)
+
         # setting button parameters
         self.allButts = [self.segmentB,self.repSegB,self.playB,self.stopB,
                          self.pauseB,self.ffB,self.rwB,self.fullSpeedB,
@@ -91,7 +91,7 @@ class GUI():
         # disable all buttons to start with
         [butt.config(state='disabled') for butt in self.allButts]
         self.sliderB.config(state='normal')
-        
+
         # placing buttons
         rowc = 3
         self.segmentB.grid(row=0,column=2)
@@ -107,7 +107,7 @@ class GUI():
         self.cursorB.grid(row=2,column=1)
         self.magPlusB.grid(row=2,column=2)
         self.magMinusB.grid(row=2,column=3)
-        
+
         # display song title
         if self.song.songname:
             t = self.song.songname[0:-4]
@@ -115,12 +115,12 @@ class GUI():
             t = ''
         self.songTitleL = Label(self.root,text=t,bg='white')
         self.songTitleL.grid(row=0,column=0)
-        
+
         # making figure canvas
         self.canvas = FigureCanvasTkAgg(self.song.fig,master=self.root)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=rowc-2,column=0,columnspan=5)
-        
+
         # connecting canvas to monitor events
         self.cidpress = self.canvas.mpl_connect(
             'button_press_event',
@@ -131,16 +131,21 @@ class GUI():
         self.cidmotion = self.canvas.mpl_connect(
             'motion_notify_event',
             lambda event:e.on_motion(event,self.song))
-        
+
+        self.root.bind('<space>', lambda event:b.playPauseStream(self.song))
+        self.root.bind('<Return>', lambda event:b.playSeg(self.song))
+
         # set cursor updating
         self.root.after(10000,lambda: e.updateCursor(self))
-        
+
         # insert menu bar
         self.root.config(menu=self.menubar)
-        
+
         # closing behaviour
         self.root.protocol("WM_DELETE_WINDOW",self.on_closing)
-        
+
+
+
     def on_closing(self):
         self.canvas.mpl_disconnect(self.cidpress)
         self.canvas.mpl_disconnect(self.cidrelease)
@@ -150,11 +155,10 @@ class GUI():
         self.song.stream.close()
         self.song.p.terminate()
         [os.remove(s) for s in self.song.createdFilepaths]
-    
+
     def updateCursor(self):
         if self.song.wf:
             pos = self.song.wf.tell()/self.song.RATE
             self.song.cursor[0].set_x(pos)
             self.canvas.draw()
-        self.root.after(250,self.updateCursor)  
-    
+        self.root.after(250,self.updateCursor)

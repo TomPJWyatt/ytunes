@@ -37,7 +37,8 @@ class Song():
         self.ax.set_ylim([-1,1])
         self.ax.set_frame_on(False)
         self.ax.xaxis.set_ticks([0,30,60,90,120,150])
-        self.ax.set_xticklabels(['00:00','00:30','01:00','01:30','02:00','02:30'])
+        self.ax.set_xticklabels(['00:00','00:30','01:00',
+                                 '01:30','02:00','02:30'])
         self.fig.subplots_adjust(bottom=0.4)
         
         self.barL = self.ax.bar(0,1.5,bottom=-0.75,

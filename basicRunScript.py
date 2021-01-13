@@ -1,6 +1,6 @@
 import tkinter as tk
-import SongClass as song
-import GUIClass as gui
+import song
+import gui
 
 root = tk.Tk()
 s0 = song.Song()
